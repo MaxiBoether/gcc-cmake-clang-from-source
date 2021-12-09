@@ -98,8 +98,8 @@ __untar  "$SOURCEDIR"  "$TARDIR/gcc-${GCC_VERSION}.tar.gz"
 #======================================================================
 # Download the prerequisites
 #======================================================================
-${SOURCEDIR}/gcc-${GCC_VERSION}/contrib/download_prerequisites
-
+cd ${SOURCEDIR}/gcc-${GCC_VERSION}
+./contrib/download_prerequisites
 
 #======================================================================
 # Configure

@@ -114,7 +114,7 @@ $SOURCEDIR/gcc-${GCC_VERSION}/configure             \
     --enable-__cxa_atexit                            \
     --enable-clocale=gnu                             \
     --enable-linker-build-id                         \
-    --enable-languages=c,c++,lto,jit                 \
+    --enable-languages=c,c++,lto                     \
     --disable-multilib                               \
     --disable-libunwind-exceptions                   \
     --disable-vtable-verify                          \

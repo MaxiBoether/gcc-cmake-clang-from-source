@@ -99,7 +99,7 @@ __untar  "$SOURCEDIR"  "$TARDIR/Python-${PYTHON_VERSION}.tgz"
 #======================================================================
 cd "${BUILDDIR}"
 
-./configure \
+$SOURCEDIR/Python-${PYTHON_VERSION}/configure \
     --prefix=$INSTALLDIR \
     --enable-shared \
     --enable-ipv6 \

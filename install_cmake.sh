@@ -92,7 +92,7 @@ done
 # Download source code
 #======================================================================
 
-__wget https://cmake.org/files/v$version/cmake-$version.$build.tar.gz cmake-$version.$build.tar.gz
+__wget https://cmake.org/files/v$version cmake-$version.$build.tar.gz
 
 # Check tarfiles are found, if not found, dont proceed
 if [ ! -f "$TARDIR/cmake-$version.$build.tar.gz" ]; then

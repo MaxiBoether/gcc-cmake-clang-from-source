@@ -6,19 +6,6 @@ BUILDDIR=/scratch/maximilian.boether/tmp/cmake-${CMAKE_VERSION}_build
 SOURCEDIR=/scratch/maximilian.boether/tmp/cmake-${CMAKE_VERSION}_source
 TARDIR=/scratch/maximilian.boether/tmp/cmake-${CMAKE_VERSION}_tar
 
-mkdir cmake
-cd cmake
-version=3.21
-build=1
-mkdir /scratch/maximilian.boether/temp
-cd /scratch/maximilian.boether/temp
-wget https://cmake.org/files/v$version/cmake-$version.$build.tar.gz
-tar -xzvf cmake-$version.$build.tar.gz
-cd cmake-$version.$build/
-./configure --prefix=$INSTALL_DIR
-make -j$(nproc)
-make install
-
 # Set script to abort on any command that results an error status
 trap '__abort' 0
 set -e

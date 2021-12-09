@@ -1,4 +1,5 @@
 CMAKE_VERSION=3.21
+CMAKE_BUILD=1
 MAKE_FLAGS="-j16"
 
 INSTALLDIR=/scratch/maximilian.boether/opt/cmake-${CMAKE_VERSION}
@@ -79,10 +80,10 @@ done
 # Download source code
 #======================================================================
 
-__wget https://cmake.org/files/v$version cmake-$version.$build.tar.gz
+__wget https://cmake.org/files/v$CMAKE_VERSION cmake-$CMAKE_VERSION.$CMAKE_BUILD.tar.gz
 
 # Check tarfiles are found, if not found, dont proceed
-if [ ! -f "$TARDIR/cmake-$version.$build.tar.gz" ]; then
+if [ ! -f "$TARDIR/cmake-$CMAKE_VERSION.$CMAKE_BUILD.tar.gz" ]; then
     __die tarfile not found: $TARDIR/$f
 fi
 
@@ -90,7 +91,7 @@ fi
 #======================================================================
 # Unpack source tarfiles
 #======================================================================
-__untar  "$SOURCEDIR"  "$TARDIR/cmake-$version.$build.tar.gz"
+__untar  "$SOURCEDIR"  "$TARDIR/cmake-$CMAKE_VERSION.$CMAKE_BUILD.tar.gz"
 
 
 #======================================================================
@@ -98,7 +99,7 @@ __untar  "$SOURCEDIR"  "$TARDIR/cmake-$version.$build.tar.gz"
 #======================================================================
 cd "${BUILDDIR}"
 
-$source_dir/gcc-${GCC_VERSION}/configure --prefix=${INSTALLDIR}      
+$SOURCEDIR/cmake-$CMAKE_VERSION.$CMAKE_BUILD/configure --prefix=${INSTALLDIR}
 
 
 #======================================================================

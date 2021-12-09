@@ -83,7 +83,7 @@ done
 # Download source code
 #======================================================================
 
-__wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/releases/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz
+__wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/releases/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz gcc-${GCC_VERSION}.tar.gz
 
 # Check tarfiles are found, if not found, dont proceed
 if [ ! -f "$TARDIR/gcc-${GCC_VERSION}.tar.gz" ]; then

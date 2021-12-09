@@ -166,6 +166,10 @@ make $MAKE_FLAGS install
 # environment
 cat << EOF > ${INSTALLDIR}/activate
 # source this script to bring gcc ${GCC_VERSION} into your environment
+
+# first, in case we are on ARM, we remove cray stuff from PATH
+export PATH=$(echo \${PATH} | awk -v RS=: -v ORS=: '/cray/ {next} {print}' | sed 's/:*$//')
+
 export PATH=${INSTALLDIR}/bin:\$PATH
 export LD_LIBRARY_PATH=${INSTALLDIR}/lib:${INSTALLDIR}/lib64:\$LD_LIBRARY_PATH
 export MANPATH=${INSTALLDIR}/share/man:\$MANPATH

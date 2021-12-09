@@ -106,7 +106,7 @@ cd ${SOURCEDIR}/gcc-${GCC_VERSION}
 #======================================================================
 cd "${BUILDDIR}"
 
-$source_dir/gcc-${GCC_VERSION}/configure             \
+$SOURCEDIR/gcc-${GCC_VERSION}/configure             \
     --prefix=${INSTALLDIR}                           \
     --enable-shared                                  \
     --enable-threads=posix                           \

@@ -174,6 +174,9 @@ export PATH=${INSTALLDIR}/bin:\$PATH
 export LD_LIBRARY_PATH=${INSTALLDIR}/lib:${INSTALLDIR}/lib64:\$LD_LIBRARY_PATH
 export MANPATH=${INSTALLDIR}/share/man:\$MANPATH
 export INFOPATH=${INSTALLDIR}/share/info:\$INFOPATH
+
+export CXX=g++
+export CC=gcc
 EOF
 
 trap : 0

@@ -2,6 +2,7 @@ PYTHON_VERSION=3.7.7
 PYTHON_MAJOR=3
 MAKE_FLAGS="-j16"
 
+LIBFFIDIR=/scratch/maximilian.boether/opt/libffi
 INSTALLDIR=/scratch/maximilian.boether/opt/python-${PYTHON_VERSION}
 BUILDDIR=/scratch/maximilian.boether/tmp/python-${PYTHON_VERSION}_build
 SOURCEDIR=/scratch/maximilian.boether/tmp/python-${PYTHON_VERSION}_source
@@ -80,6 +81,7 @@ done
 # Download source code
 #======================================================================
 
+__wget https://github.com/libffi/libffi/releases/download/v3.4.2 libffi-3.4.2.tar.gz
 __wget https://www.python.org/ftp/python/${PYTHON_VERSION} Python-${PYTHON_VERSION}.tgz
 
 # Check tarfiles are found, if not found, dont proceed
@@ -92,18 +94,35 @@ fi
 # Unpack source tarfiles
 #======================================================================
 __untar  "$SOURCEDIR"  "$TARDIR/Python-${PYTHON_VERSION}.tgz"
+__untar  "$SOURCEDIR"  "$TARDIR/libffi-3.4.2.tar.gz"
 
+## Handle libeffi first
+
+cd "${BUILDDIR}"
+mkdir libffi
+cd libffi
+$SOURCEDIR/libffi-3.4.2/./configure --disable-docs
+make $MAKE_FLAGS
+make $MAKE_FLAGS install
 
 #======================================================================
 # Configure
 #======================================================================
+
+
 cd "${BUILDDIR}"
+
+export LD_LIBRARY_PATH=$LIBFFIDIR:$LD_LIBRARY_PATH
+export LD_RUN_PATH=$LIBFFIDIR:$LD_RUN_PATH
 
 $SOURCEDIR/Python-${PYTHON_VERSION}/configure \
     --prefix=$INSTALLDIR \
     --enable-shared \
     --enable-ipv6 \
-    LDFLAGS=-Wl,-rpath=$INSTALLDIR/lib,--disable-new-dtags
+    --with-ensurepip=install \
+    --with-system-ffi=$LIBFFIDIR \
+    LDFLAGS="-Wl,-rpath=$INSTALLDIR/lib,--disable-new-dtags,-L$LIBFFIDIR" \
+    CPPFLAGS="-I $LIBFFIDIR/libffi-3.4.2/include"
 
 #======================================================================
 # Compiling and installing
@@ -122,6 +141,8 @@ make $MAKE_FLAGS install
 cat << EOF > ${INSTALLDIR}/activate
 # source this script to bring python ${PYTHON_VERSION} into your environment
 export PATH=${INSTALLDIR}/bin:\$PATH
+
+alias python='python3'
 EOF
 
 trap : 0

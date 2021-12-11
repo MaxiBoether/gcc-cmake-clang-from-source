@@ -101,7 +101,7 @@ __untar  "$SOURCEDIR"  "$TARDIR/libffi-3.4.2.tar.gz"
 cd "${BUILDDIR}"
 mkdir libffi
 cd libffi
-$SOURCEDIR/libffi-3.4.2/./configure --disable-docs
+$SOURCEDIR/libffi-3.4.2/./configure --disable-docs --prefix=$LIBFFIDIR 
 make $MAKE_FLAGS
 make $MAKE_FLAGS install
 

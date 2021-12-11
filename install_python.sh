@@ -112,8 +112,8 @@ make $MAKE_FLAGS install
 
 cd "${BUILDDIR}"
 
-export LD_LIBRARY_PATH=$LIBFFIDIR:$LD_LIBRARY_PATH
-export LD_RUN_PATH=$LIBFFIDIR:$LD_RUN_PATH
+export LD_LIBRARY_PATH=$LIBFFIDIR:$LIBFFIDIR/lib:$LIBFFIDIR/lib64:$LD_LIBRARY_PATH
+export LD_RUN_PATH=$LIBFFIDIR:$LIBFFIDIR/lib:$LIBFFIDIR/lib64:$LD_RUN_PATH
 
 $SOURCEDIR/Python-${PYTHON_VERSION}/configure \
     --prefix=$INSTALLDIR \
@@ -121,7 +121,7 @@ $SOURCEDIR/Python-${PYTHON_VERSION}/configure \
     --enable-ipv6 \
     --with-ensurepip=install \
     --with-system-ffi=$LIBFFIDIR \
-    LDFLAGS="-Wl,-rpath=$INSTALLDIR/lib,--disable-new-dtags,-L$LIBFFIDIR" \
+    LDFLAGS="-Wl,-rpath=$INSTALLDIR/lib,--disable-new-dtags,-L$LIBFFIDIR/lib64" \
     CPPFLAGS="-I $LIBFFIDIR/libffi-3.4.2/include"
 
 #======================================================================
@@ -141,6 +141,8 @@ make $MAKE_FLAGS install
 cat << EOF > ${INSTALLDIR}/activate
 # source this script to bring python ${PYTHON_VERSION} into your environment
 export PATH=${INSTALLDIR}/bin:\$PATH
+export LD_LIBRARY_PATH=${LIBFFIDIR}:${LIBFFIDIR}/lib:${LIBFFIDIR}/lib64:\$LD_LIBRARY_PATH
+export LD_RUN_PATH=${LIBFFIDIR}:${LIBFFIDIR}/lib:${LIBFFIDIR}/lib64:\$LD_RUN_PATH
 
 alias python='python3'
 EOF

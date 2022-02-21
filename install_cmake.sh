@@ -99,6 +99,7 @@ __untar  "$SOURCEDIR"  "$TARDIR/cmake-$CMAKE_VERSION.$CMAKE_BUILD.tar.gz"
 #======================================================================
 cd "${BUILDDIR}"
 
+$SOURCEDIR/cmake-$CMAKE_VERSION.$CMAKE_BUILD/bootstrap --prefix=${INSTALLDIR} -- -DCMAKE_USE_OPENSSL=OFF
 $SOURCEDIR/cmake-$CMAKE_VERSION.$CMAKE_BUILD/configure --prefix=${INSTALLDIR}
 
 

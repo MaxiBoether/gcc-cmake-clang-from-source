@@ -177,6 +177,9 @@ export INFOPATH=${INSTALLDIR}/share/info:\$INFOPATH
 
 export CXX=g++
 export CC=gcc
+export AR=gcc-ar
+export NM=gcc-nm
+export RANLIB=gcc-ranlib
 EOF
 
 trap : 0

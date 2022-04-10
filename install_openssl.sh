@@ -81,7 +81,7 @@ done
 # Download source code
 #======================================================================
 
-__wget https://www.openssl.org/source/openssl-${SSL_VERSION}.tar.gz openssl-${SSL_VERSION}.tar.gz
+__wget https://www.openssl.org/source openssl-${SSL_VERSION}.tar.gz
 
 # Check tarfiles are found, if not found, dont proceed
 if [ ! -f "$TARDIR/openssl-${SSL_VERSION}.tar.gz" ]; then
@@ -100,8 +100,7 @@ cd "${BUILDDIR}"
 
 $SOURCEDIR/openssl-${SSL_VERSION}/config             \
     --prefix=${INSTALLDIR}                           \
-    --openssldir=${INSTALLDIR}                       \
-    -static
+    --openssldir=${INSTALLDIR}                       
 
 #======================================================================
 # Compiling and installing
@@ -118,12 +117,13 @@ make $MAKE_FLAGS install
 # Create a shell script that users can source to bring openssl into shell
 # environment
 cat << EOF > ${INSTALLDIR}/activate
-# source this script to bring gcc ${SSL_VERSION} into your environment
+# source this script to bring openssl ${SSL_VERSION} into your environment
 
 export PATH=${INSTALLDIR}/bin:\$PATH
 export LD_LIBRARY_PATH=${INSTALLDIR}/lib:${INSTALLDIR}/lib64:\$LD_LIBRARY_PATH
 export MANPATH=${INSTALLDIR}/share/man:\$MANPATH
 export INFOPATH=${INSTALLDIR}/share/info:\$INFOPATH
+export OPENSSL_ROOT_DIR=${INSTALLDIR}
 EOF
 
 trap : 0

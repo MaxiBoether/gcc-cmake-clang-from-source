@@ -109,6 +109,7 @@ cmake -G Ninja \
 cd "$BUILDDIR"
 ninja clang
 ninja clang-tools-extra
+ninja compiler-rt
 ninja cxx
 
 

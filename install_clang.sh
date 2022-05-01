@@ -99,7 +99,6 @@ cmake -G Ninja \
     -DDEFAULT_SYSROOT="${INSTALLDIR}" \
     -DCMAKE_INSTALL_PREFIX="${INSTALLDIR}" \
     -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" \
-    -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
     -DCMAKE_BUILD_TYPE=Release ${SOURCEDIR}/llvm-project/llvm
 
 #======================================================================
@@ -108,11 +107,9 @@ cmake -G Ninja \
 
 cd "$BUILDDIR"
 ninja clang
-ninja clang-tools-extra
 ninja compiler-rt
 ninja cxx
-
-
+ninja install
 
 #======================================================================
 # Post build
@@ -133,9 +130,9 @@ export INFOPATH=${INSTALLDIR}/share/info:\$INFOPATH
 
 export CXX=clang++
 export CC=clang
-#export AR=gcc-ar
-#export NM=gcc-nm
-#export RANLIB=gcc-ranlib
+export AR=llvm-ar
+export NM=llvm-nm
+export RANLIB=llvm-ranlib
 EOF
 
 trap : 0

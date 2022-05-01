@@ -86,6 +86,7 @@ done
 
 cd ${SOURCEDIR}
 git clone https://github.com/ninja-build/ninja
+cd ninja
 git checkout ${NINJA_VERSION}
 
 cmake -Bbuild-cmake

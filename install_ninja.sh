@@ -105,7 +105,7 @@ cp build-cmake/ninja ${INSTALLDIR}/ninja
 cat << EOF > ${INSTALLDIR}/activate
 # source this script to bring ninja ${NINJA_VERSION} into your environment
 
-export PATH=${INSTALLDIR}/bin:\$PATH
+export PATH=${INSTALLDIR}:\$PATH
 EOF
 
 trap : 0

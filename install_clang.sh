@@ -1,7 +1,6 @@
 #! /bin/bash
 
-LLVM_VERSION=llvmorg-14.0.3
-MAKE_FLAGS="-j16"
+LLVM_VERSION=main
 
 INSTALLDIR=/scratch/maximilian.boether/opt/llvm-${LLVM_VERSION}
 BUILDDIR=/scratch/maximilian.boether/tmp/llvm-${LLVM_VERSION}_build
@@ -13,39 +12,6 @@ packageversion="$(whoami)-$(hostname -s)"
 # Set script to abort on any command that results an error status
 trap '__abort' 0
 set -e
-
-__wget()
-{
-    urlroot=$1; shift
-    tarfile=$1; shift
-
-    if [ ! -e "$TARDIR/$tarfile" ]; then
-        wget --verbose ${urlroot}/$tarfile --directory-prefix="$TARDIR"
-    else
-        echo "already downloaded: $tarfile  '$TARDIR/$tarfile'"
-    fi
-}
-
-__untar()
-{
-    dir="$1";
-    file="$2"
-    case $file in
-        *xz)
-            tar xJ -C "$dir" -f "$file"
-            ;;
-        *bz2)
-            tar xj -C "$dir" -f "$file"
-            ;;
-        *gz)
-            tar xz -C "$dir" -f "$file"
-            ;;
-        *)
-            __die "don't know how to unzip $file"
-            ;;
-    esac
-}
-
 
 __abort()
 {
@@ -85,31 +51,15 @@ done
 
 cd ${SOURCEDIR}
 
-git clone -b ${LLVM_VERSION} --single-branch https://github.com/llvm/llvm-project.git
-cd llvm-project
-git checkout ${LLVM_VERSION}
+git clone https://github.com/ClangBuiltLinux/tc-build
+cd tc-build
 
 
 #======================================================================
-# Configure
-#======================================================================
-cd ${BUILDDIR}
-
-cmake -G Ninja \
-    -DDEFAULT_SYSROOT="${INSTALLDIR}" \
-    -DCMAKE_INSTALL_PREFIX="${INSTALLDIR}" \
-    -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" \
-    -DCMAKE_BUILD_TYPE=Release ${SOURCEDIR}/llvm-project/llvm
-
-#======================================================================
-# Compiling and installing
+# Let the script do all the work
 #======================================================================
 
-cd "$BUILDDIR"
-ninja clang
-ninja compiler-rt
-ninja cxx
-ninja install
+python3 build-llvm.py -p "clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" -s --branch "${LLVM_VERSION}" --install-folder="${INSTALLDIR}"
 
 #======================================================================
 # Post build

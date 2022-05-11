@@ -90,7 +90,7 @@ fi
 #======================================================================
 # Unpack source tarfiles and install
 #======================================================================
-tar -xvf "$TARDIR/armclang-${ARMCLANG_VERSION}.tar.gz" "$SOURCEDIR"  
+tar -xvf "$TARDIR/armclang-${ARMCLANG_VERSION}.tar.gz" -C "$SOURCEDIR"  
 
 cd ${SOURCEDIR}/arm-compiler-for-linux_22.0.1_RHEL-8
 ./arm-compiler-for-linux_22.0.1_RHEL-8.sh -a -i ${INSTALLDIR}

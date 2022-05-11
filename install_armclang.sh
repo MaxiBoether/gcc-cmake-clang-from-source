@@ -2,10 +2,10 @@
 
 ARMCLANG_VERSION=22.0.2
 
-INSTALLDIR=/scratch/maximilian.boether/opt/gcc-${ARMCLANG_VERSION}
-BUILDDIR=/scratch/maximilian.boether/tmp/gcc-${ARMCLANG_VERSION}_build
-SOURCEDIR=/scratch/maximilian.boether/tmp/gcc-${ARMCLANG_VERSION}_source
-TARDIR=/scratch/maximilian.boether/tmp/gcc-${ARMCLANG_VERSION}_tar
+INSTALLDIR=/scratch/maximilian.boether/opt/armclang-${ARMCLANG_VERSION}
+BUILDDIR=/scratch/maximilian.boether/tmp/armclang-${ARMCLANG_VERSION}_build
+SOURCEDIR=/scratch/maximilian.boether/tmp/armclang-${ARMCLANG_VERSION}_source
+TARDIR=/scratch/maximilian.boether/tmp/armclang-${ARMCLANG_VERSION}_tar
 
 # Set script to abort on any command that results an error status
 trap '__abort' 0

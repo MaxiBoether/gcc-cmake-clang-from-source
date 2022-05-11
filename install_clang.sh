@@ -3,7 +3,7 @@
 LLVM_VERSION=main
 PAR_COMPILE_JOBS=8
 PAR_LINK_JOBS=2
-GCC_LIB_PATH=/scratch/maximilian.boether/opt/gcc-ml-11.2.0/lib64
+GCC_PATH=/scratch/maximilian.boether/opt/gcc-ml-11.2.0
 
 INSTALLDIR=/scratch/maximilian.boether/opt/llvm-${LLVM_VERSION}
 BUILDDIR=/scratch/maximilian.boether/tmp/llvm-${LLVM_VERSION}_build
@@ -11,6 +11,9 @@ SOURCEDIR=/scratch/maximilian.boether/tmp/llvm-${LLVM_VERSION}_source
 TARDIR=/scratch/maximilian.boether/tmp/llvm-${LLVM_VERSION}_tar
 
 packageversion="$(whoami)-$(hostname -s)"
+
+GCC_LIB64_PATH="${GCC_PATH}/lib64"
+GCC_LIB_PATH="${GCC_PATH}/lib"
 
 # Set script to abort on any command that results an error status
 trap '__abort' 0
@@ -61,8 +64,13 @@ cd tc-build
 #======================================================================
 # Let the script do all the work
 #======================================================================
+module purge || true
 
-python3 build-llvm.py -p "clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" -s --branch "${LLVM_VERSION}" --install-folder="${INSTALLDIR}" -D LLVM_PARALLEL_COMPILE_JOBS="${PAR_COMPILE_JOBS}" LLVM_PARALLEL_LINK_JOBS="${PAR_LINK_JOBS}" CMAKE_CXX_LINK_FLAGS="-Wl,-rpath,${GCC_LIB_PATH} -L${GCC_LIB_PATH}" LINK_FLAGS="-Wl,-rpath,${GCC_LIB_PATH} -L${GCC_LIB_PATH}" 
+mkdir "${INSTALLDIR}/lib"
+cp $(find ${GCC_PATH} | grep crtbeginS.o) "${INSTALLDIR}/lib"
+cp $(find ${GCC_PATH} | grep crtendS.o) "${INSTALLDIR}/lib"
+
+python3 build-llvm.py -p "clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" -s --branch "${LLVM_VERSION}" --install-folder="${INSTALLDIR}" -D LLVM_PARALLEL_COMPILE_JOBS="${PAR_COMPILE_JOBS}" LLVM_PARALLEL_LINK_JOBS="${PAR_LINK_JOBS}" CMAKE_CXX_LINK_FLAGS="-Wl,-rpath,${GCC_LIB_PATH} -L${GCC_LIB_PATH} -Wl,-rpath,${GCC_LIB64_PATH} -L${GCC_LIB64_PATH}" LINK_FLAGS="-Wl,-rpath,${GCC_LIB_PATH} -L${GCC_LIB_PATH} -Wl,-rpath,${GCC_LIB64_PATH} -L${GCC_LIB64_PATH}" 
 
 #======================================================================
 # Post build
@@ -86,6 +94,8 @@ export CC=clang
 export AR=llvm-ar
 export NM=llvm-nm
 export RANLIB=llvm-ranlib
+export CXXFLAGS="-fuse-ld=lld -stdlib=libc++ --rtlib=compiler-rt ${CXXFLAGS}"
+export CFLAGS="-fuse-ld=lld --rtlib=compiler-rt ${CFLAGS}"
 EOF
 
 trap : 0

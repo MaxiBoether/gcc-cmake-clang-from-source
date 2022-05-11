@@ -80,7 +80,7 @@ done
 # Download source code
 #======================================================================
 
-__wget https://developer.arm.com/-/media/Files/downloads/hpc/arm-allinea-studio/22-0-1/arm-compiler-for-linux_22.0.1_RHEL-8_aarch64.tar?revision=f0b78a0a-48a5-4f91-871b-24ed3e4db860 armclang-${ARMCLANG_VERSION}.tar.gz
+wget --verbose https://developer.arm.com/-/media/Files/downloads/hpc/arm-allinea-studio/22-0-1/arm-compiler-for-linux_22.0.1_RHEL-8_aarch64.tar?revision=f0b78a0a-48a5-4f91-871b-24ed3e4db860 --directory-prefix="$TARDIR" -O armclang-${ARMCLANG_VERSION}.tar.gz
 
 # Check tarfiles are found, if not found, dont proceed
 if [ ! -f "$TARDIR/armclang-${ARMCLANG_VERSION}.tar.gz" ]; then

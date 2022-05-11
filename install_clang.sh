@@ -1,6 +1,9 @@
 #! /bin/bash
 
 LLVM_VERSION=main
+PAR_COMPILE_JOBS=8
+PAR_LINK_JOBS=2
+GCC_LIB_PATH=/scratch/maximilian.boether/opt/gcc-ml-11.2.0/lib64
 
 INSTALLDIR=/scratch/maximilian.boether/opt/llvm-${LLVM_VERSION}
 BUILDDIR=/scratch/maximilian.boether/tmp/llvm-${LLVM_VERSION}_build
@@ -59,7 +62,7 @@ cd tc-build
 # Let the script do all the work
 #======================================================================
 
-python3 build-llvm.py -p "clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" -s --branch "${LLVM_VERSION}" --install-folder="${INSTALLDIR}"
+python3 build-llvm.py -p "clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" -s --branch "${LLVM_VERSION}" --install-folder="${INSTALLDIR}" -D LLVM_PARALLEL_COMPILE_JOBS="${PAR_COMPILE_JOBS}" LLVM_PARALLEL_LINK_JOBS="${PAR_LINK_JOBS}" CMAKE_CXX_LINK_FLAGS="-Wl,-rpath,${GCC_LIB_PATH} -L${GCC_LIB_PATH}" LINK_FLAGS="-Wl,-rpath,${GCC_LIB_PATH} -L${GCC_LIB_PATH}" 
 
 #======================================================================
 # Post build

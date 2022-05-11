@@ -84,6 +84,8 @@ cat << EOF > ${INSTALLDIR}/activate
 # first, in case we are on ARM, we remove cray stuff from PATH
 export PATH=$(echo \${PATH} | awk -v RS=: -v ORS=: '/cray/ {next} {print}' | sed 's/:*$//')
 
+module purge # clang really does not like all the other modules
+
 export PATH=${INSTALLDIR}/bin:\$PATH
 export LD_LIBRARY_PATH=${INSTALLDIR}/lib:${INSTALLDIR}/lib64:\$LD_LIBRARY_PATH
 export MANPATH=${INSTALLDIR}/share/man:\$MANPATH

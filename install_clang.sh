@@ -6,6 +6,7 @@ PAR_LINK_JOBS=2
 GCC_PATH=/scratch/maximilian.boether/opt/gcc-ml-11.2.0
 
 INSTALLDIR=/scratch/maximilian.boether/opt/llvm-${LLVM_VERSION}
+INSTALLDIR_ST1=/scratch/maximilian.boether/tmp/llvm-${LLVM_VERSION}-st1
 BUILDDIR=/scratch/maximilian.boether/tmp/llvm-${LLVM_VERSION}_build
 SOURCEDIR=/scratch/maximilian.boether/tmp/llvm-${LLVM_VERSION}_source
 TARDIR=/scratch/maximilian.boether/tmp/llvm-${LLVM_VERSION}_tar
@@ -66,11 +67,29 @@ cd tc-build
 #======================================================================
 module purge || true
 
-mkdir "${INSTALLDIR}/lib"
-cp $(find ${GCC_PATH} | grep crtbeginS.o) "${INSTALLDIR}/lib"
-cp $(find ${GCC_PATH} | grep crtendS.o) "${INSTALLDIR}/lib"
+mkdir -p "${INSTALLDIR}/lib" || true
+cp $(find ${GCC_PATH} | grep crtbeginS.o) "${INSTALLDIR}/lib" || true
+cp $(find ${GCC_PATH} | grep crtendS.o) "${INSTALLDIR}/lib" || true
 
-python3 build-llvm.py -p "clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" -s --branch "${LLVM_VERSION}" --install-folder="${INSTALLDIR}" -D LLVM_PARALLEL_COMPILE_JOBS="${PAR_COMPILE_JOBS}" LLVM_PARALLEL_LINK_JOBS="${PAR_LINK_JOBS}" CMAKE_CXX_LINK_FLAGS="-Wl,-rpath,${GCC_LIB_PATH} -L${GCC_LIB_PATH} -Wl,-rpath,${GCC_LIB64_PATH} -L${GCC_LIB64_PATH}" LINK_FLAGS="-Wl,-rpath,${GCC_LIB_PATH} -L${GCC_LIB_PATH} -Wl,-rpath,${GCC_LIB64_PATH} -L${GCC_LIB64_PATH}" 
+# First, build stage 1 using gcc
+python3 build-llvm.py -p "clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" -s --branch "${LLVM_VERSION}" --install-folder="${INSTALLDIR_ST1}" --build-stage1-only --install-stage1-only -D LLVM_PARALLEL_COMPILE_JOBS="${PAR_COMPILE_JOBS}" LLVM_PARALLEL_LINK_JOBS="${PAR_LINK_JOBS}" CMAKE_CXX_LINK_FLAGS="-Wl,-rpath,${GCC_LIB_PATH} -L${GCC_LIB_PATH} -Wl,-rpath,${GCC_LIB64_PATH} -L${GCC_LIB64_PATH}" LINK_FLAGS="-Wl,-rpath,${GCC_LIB_PATH} -L${GCC_LIB_PATH} -Wl,-rpath,${GCC_LIB64_PATH} -L${GCC_LIB64_PATH}" COMPILER_RT_BUILD_CRT=ON
+
+# Clear build files
+rm -r ${SOURCEDIR}/tc-build/build
+
+# Use stage 1 clang
+export PATH=${INSTALLDIR_ST1}/bin:${PATH}
+export LD_LIBRARY_PATH=${INSTALLDIR_ST1}/lib:${INSTALLDIR_ST1}/lib64:${LD_LIBRARY_PATH}
+export CXX=clang++
+export CC=clang
+export LD="/usr/bin/ld"
+
+cp $(find ${GCC_PATH} | grep crtbeginS.o) "${INSTALLDIR_ST1}/lib" || true
+cp $(find ${GCC_PATH} | grep crtendS.o) "${INSTALLDIR_ST1}/lib" || true
+
+# Build stage 1 and 2 again using stage 1 clang
+python3 build-llvm.py -p "clang;clang-tools-extra;libcxx;libcxxabi;libunwind;compiler-rt;lld" -s --branch "${LLVM_VERSION}" --install-folder="${INSTALLDIR}" -D LLVM_PARALLEL_COMPILE_JOBS="${PAR_COMPILE_JOBS}" LLVM_PARALLEL_LINK_JOBS="${PAR_LINK_JOBS}" CMAKE_CXX_FLAGS="--gcc-toolchain=${GCC_PATH}" CMAKE_C_FLAGS="--gcc-toolchain=${GCC_PATH}" COMPILER_RT_BUILD_CRT=ON
+
 
 #======================================================================
 # Post build
